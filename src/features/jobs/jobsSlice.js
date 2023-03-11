@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { removeJob } from '../job/jobSlice';
 import getJobs from './jobsAPI';
 
 // initial state
@@ -11,7 +12,7 @@ const initialState = {
 
 // thunk function to fetch jobs from the server
 export const fetchJobs = createAsyncThunk('jobs/fetchJobs', async () => {
-    const jobs = getJobs();
+    const jobs = await getJobs();
     return jobs;
 });
 
@@ -35,6 +36,11 @@ const jobsSlice = createSlice({
                 state.isError = true;
                 state.jobs = [];
                 state.error = action.error?.message;
+            })
+            // removing specific job from the redux store after deleting
+            .addCase(removeJob.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.jobs = state.jobs.filter(job => job.id !== action.meta.arg);
             });
     },
 });

@@ -1,17 +1,27 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { removeJob } from '../../features/job/jobSlice';
 import numberWithCommas from '../../utils/numberWithCommas';
 
 const JobItem = ({ job }) => {
     // destructuring the job object here
-    const { title, type, salary, deadline } = job || {};
+    const { id, title, type, salary, deadline } = job || {};
+
+    // integration of react-redux hooks here
+    const dispatch = useDispatch();
 
     // integration of react-router-dom hooks here
     const navigate = useNavigate();
 
-    // this function is handling routing to edit job page
-    const handleRerouteToEditPage = () => {
+    // handler function for handling routing to edit job page
+    const rerouteToEditPageHandler = () => {
         navigate('/edit-job');
+    }
+
+    // handler function for handling delete job from the server
+    const deleteJobHandler = () => {
+        dispatch(removeJob(id));
     }
 
     // rendering job item card component here
@@ -36,14 +46,14 @@ const JobItem = ({ job }) => {
             </div>
             <div className='mt-5 flex lg:mt-0 lg:ml-4'>
                 <span className='hidden sm:block'>
-                    <button onClick={handleRerouteToEditPage} type='button' className='lws-edit btn btn-primary'>
+                    <button onClick={rerouteToEditPageHandler} type='button' className='lws-edit btn btn-primary'>
                         <i className='fa-solid fa-pen text-gray-300 -ml-1 mr-2'></i>
                         Edit
                     </button>
                 </span>
 
                 <span className='sm:ml-3'>
-                    <button type='button' className='lws-delete btn btn-danger '>
+                    <button onClick={deleteJobHandler} type='button' className='lws-delete btn btn-danger '>
                         <i className='fa-solid fa-trash text-gray-300 -ml-1 mr-2'></i>
                         Delete
                     </button>
