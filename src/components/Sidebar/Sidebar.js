@@ -1,12 +1,11 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { filtered } from '../../features/filters/filtersSlice';
 
 const Sidebar = () => {
     // integration of react-redux hooks here
     const dispatch = useDispatch();
-    const { filterBy } = useSelector(state => state.filters);
 
     // handler function to handle filter feature
     const filterHandler = text => {
@@ -19,25 +18,25 @@ const Sidebar = () => {
             <nav>
                 <ul className='space-y-4'>
                     <li>
-                        <Link to={'/'} onClick={() => filterHandler('All')} className={`main-menu ${filterBy === 'All' && 'menu-active'}`} id='lws-alljobs-menu'>
+                        <Link to={'/'} onClick={() => filterHandler('All')} className='main-menu menu-active' id='lws-alljobs-menu'>
                             <i className='fa-solid fa-briefcase'></i>
                             <span> All Available Jobs</span>
                         </Link>
                         <ul className='space-y-6 lg:space-y-2 '>
                             <li>
-                                <button onClick={() => filterHandler('Internship')} className={`sub-menu ${filterBy === 'Internship' && 'menu-active'}`} id='lws-internship-menu'>
+                                <button onClick={() => filterHandler('Internship')} className='sub-menu menu-active' id='lws-internship-menu'>
                                     <i className='fa-solid fa-stop !text-[#FF5757]'></i>
                                     <span> Internship</span>
                                 </button>
                             </li>
                             <li>
-                                <button onClick={() => filterHandler('Full Time')} className={`sub-menu ${filterBy === 'Full Time' && 'menu-active'}`} id='lws-fulltime-menu'>
+                                <button onClick={() => filterHandler('Full Time')} className='sub-menu menu-active' id='lws-fulltime-menu'>
                                     <i className='fa-solid fa-stop !text-[#FF8A00]'></i>
                                     <span> Full Time</span>
                                 </button>
                             </li>
                             <li>
-                                <button onClick={() => filterHandler('Remote')} className={`sub-menu ${filterBy === 'Remote' && 'menu-active'}`} id='lws-remote-menu'>
+                                <button onClick={() => filterHandler('Remote')} className='sub-menu menu-active' id='lws-remote-menu'>
                                     <i className='fa-solid fa-stop !text-[#56E5C4]'></i>
                                     <span> Remote</span>
                                 </button>
