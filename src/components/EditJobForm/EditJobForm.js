@@ -115,7 +115,7 @@ const EditJobForm = () => {
 
                     <div className='fieldContainer'>
                         <label htmlFor='lws-JobDeadline'>Deadline</label>
-                        <input onChange={e => setEditedDeadline(e.target.value)} value={editedDeadline} type='date' name='lwsJobDeadline' id='lws-JobDeadline' min={new Date().toISOString().split('T')[0]} required />
+                        <input onChange={e => setEditedDeadline(e.target.value)} value={editedDeadline} type='date' name='lwsJobDeadline' id='lws-JobDeadline' required />
                     </div>
 
                     <div className='text-right'>
