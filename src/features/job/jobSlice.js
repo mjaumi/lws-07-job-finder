@@ -5,26 +5,27 @@ import { addJob, deleteJob, editJob } from './jobAPI';
 const initialState = {
     isLoading: false,
     job: {},
+    status: -1,
     isError: false,
     error: '',
 };
 
 // thunk function to add new job to the server
 export const createJob = createAsyncThunk('job/createJob', async (data) => {
-    const job = await addJob(data);
-    return job;
+    const status = await addJob(data);
+    return status;
 });
 
 // thunk function to edit existing job from the server
 export const updateJob = createAsyncThunk('job/updateJob', async ({ id, data }) => {
-    const job = await editJob({ id, data });
-    return job;
+    const status = await editJob({ id, data });
+    return status;
 });
 
 // thunk function to delete job from the server
 export const removeJob = createAsyncThunk('job/removeJob', async (id) => {
-    const job = await deleteJob(id);
-    return job;
+    const status = await deleteJob(id);
+    return status;
 });
 
 const jobSlice = createSlice({
@@ -32,7 +33,12 @@ const jobSlice = createSlice({
     initialState,
     reducers: {
         editedJob: (state, action) => {
+            state.isError = false;
             state.job = action.payload;
+        },
+
+        resetStatus: (state) => {
+            state.status = -1;
         },
     },
     extraReducers: builder => {
@@ -45,12 +51,12 @@ const jobSlice = createSlice({
             })
             .addCase(createJob.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.job = action.payload;
+                state.status = action.payload;
             })
             .addCase(createJob.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
-                state.job = {};
+                state.status = 0;
                 state.error = action.error?.message;
             })
             // add cases for update job
@@ -61,12 +67,12 @@ const jobSlice = createSlice({
             })
             .addCase(updateJob.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.job = action.payload;
+                state.status = action.payload;
             })
             .addCase(updateJob.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
-                state.job = {};
+                state.status = 0;
                 state.error = action.error?.message;
             })
             // add cases for remove job
@@ -77,16 +83,16 @@ const jobSlice = createSlice({
             })
             .addCase(removeJob.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.job = action.payload;
+                state.status = action.payload;
             })
             .addCase(removeJob.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
-                state.job = {};
+                state.status = 0;
                 state.error = action.error?.message;
             });
     }
 });
 
-export const { editedJob } = jobSlice.actions;
+export const { editedJob, resetStatus } = jobSlice.actions;
 export default jobSlice.reducer;

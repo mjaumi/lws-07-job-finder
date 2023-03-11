@@ -11,3 +11,29 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center{
+  align-items: center;
+}
+
+.font-semibold{
+  font-weight: 700;
+}
+
+.text-xl {
+  font-size: 22px;
+}
+
+.text-red{
+  color: #bd1414;
+}
+
+.Toastify__toast {
+  width: 450px;
+  background-color: #1E293B;
+  text-align: center;
+}

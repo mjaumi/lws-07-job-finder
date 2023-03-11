@@ -1,7 +1,8 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { editedJob, removeJob } from '../../features/job/jobSlice';
+import { toast } from 'react-toastify';
+import { editedJob, removeJob, resetStatus } from '../../features/job/jobSlice';
 import numberWithCommas from '../../utils/numberWithCommas';
 
 const JobItem = ({ job }) => {
@@ -10,9 +11,29 @@ const JobItem = ({ job }) => {
 
     // integration of react-redux hooks here
     const dispatch = useDispatch();
+    const { isLoading, status, isError } = useSelector(state => state.job);
 
     // integration of react-router-dom hooks here
     const navigate = useNavigate();
+
+    // showing toast to the user here about deleting a job
+    useEffect(() => {
+        if (!isLoading) {
+            if (!isError && status === 200) {
+                toast.success('Job Deleted Successfully!!!', {
+                    toastId: 'deleteSuccessToast',
+                });
+            }
+
+            if (isError || (status !== 200 && status !== -1)) {
+                toast.error('Something Went Wrong. Please, Try Again Later.', {
+                    toastId: 'deleteErrorToast',
+                });
+            }
+
+            dispatch(resetStatus());
+        }
+    }, [dispatch, isLoading, isError, status]);
 
     // handler function for handling routing to edit job page
     const rerouteToEditPageHandler = () => {

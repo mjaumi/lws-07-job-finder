@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { searched, sorted } from '../../features/filters/filtersSlice';
 import { fetchJobs } from '../../features/jobs/jobsSlice';
 import JobItem from '../JobItem/JobItem';
+import Loading from '../Loading/Loading';
 
 const JobList = () => {
     // integration of react-redux hooks here
@@ -56,15 +57,15 @@ const JobList = () => {
     let content = null;
 
     if (isLoading) {
-        content = <p>Loading ...</p>;
+        content = <Loading />;
     }
 
     if (!isLoading && isError) {
-        content = <p>{error}</p>;
+        content = <p className='text-center font-bold text-xl text-red'>{error}</p>;
     }
 
     if (!isLoading && !isError && !jobs.length) {
-        content = <p>No Jobs Found!!</p>;
+        content = <p className='text-center font-bold text-xl text-red'>No Jobs Found!!</p>;
     }
 
     if (!isLoading && !isError && jobs.length) {

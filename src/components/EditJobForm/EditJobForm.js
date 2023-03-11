@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { updateJob } from '../../features/job/jobSlice';
+import { toast } from 'react-toastify';
+import { resetStatus, updateJob } from '../../features/job/jobSlice';
 
 const EditJobForm = () => {
     // integration of react-redux hooks here
     const dispatch = useDispatch();
     const { id, title, type, salary, deadline } = useSelector(state => state.job.job);
+    const { isLoading, status, isError } = useSelector(state => state.job);
 
     // integration of react hooks here
     const [editedTitle, setEditedTitle] = useState(title);
@@ -16,6 +18,27 @@ const EditJobForm = () => {
 
     // integration of react-router-dom hooks here
     const navigate = useNavigate();
+
+    // showing toast to the user here about editing existing job
+    useEffect(() => {
+        if (!isLoading) {
+            if (!isError && status === 200) {
+                toast.success('Job Updated Successfully!!!', {
+                    toastId: 'updateSuccessToast',
+                });
+                // returning to home page after editing
+                navigate('/');
+            }
+
+            if (isError || (status !== 200 && status !== -1)) {
+                toast.error('Something Went Wrong. Please, Try Again Later.', {
+                    toastId: 'updateErrorToast',
+                });
+            }
+
+            dispatch(resetStatus());
+        }
+    }, [dispatch, isLoading, isError, status, navigate]);
 
     // this function is to reset the form after submission or error
     const resetForm = () => {
@@ -41,9 +64,6 @@ const EditJobForm = () => {
         }));
 
         resetForm();
-
-        // returning to home page after editing
-        navigate('/');
     }
 
     // rendering edit job form component here 

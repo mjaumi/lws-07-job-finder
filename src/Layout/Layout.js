@@ -1,6 +1,8 @@
 import React from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import Sidebar from '../components/Sidebar/Sidebar';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const Layout = ({ children }) => {
 
@@ -16,6 +18,7 @@ const Layout = ({ children }) => {
                     </main>
                 </div>
             </div>
+            <ToastContainer position='top-center' theme='dark' />
         </>
     );
 };

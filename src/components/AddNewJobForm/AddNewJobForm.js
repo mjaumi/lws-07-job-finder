@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { createJob } from '../../features/job/jobSlice';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { createJob, resetStatus } from '../../features/job/jobSlice';
 
 const AddNewJobForm = () => {
     // integration of react hooks here
@@ -11,6 +12,26 @@ const AddNewJobForm = () => {
 
     // integration of react-redux hooks here
     const dispatch = useDispatch();
+    const { isLoading, status, isError } = useSelector(state => state.job);
+
+    // showing toast to the user here about adding new job
+    useEffect(() => {
+        if (!isLoading) {
+            if (!isError && status === 201) {
+                toast.success('New Job Added Successfully!!!', {
+                    toastId: 'addSuccessToast',
+                });
+            }
+
+            if (isError || (status !== 201 && status !== -1)) {
+                toast.error('Something Went Wrong. Please, Try Again Later.', {
+                    toastId: 'addErrorToast',
+                });
+            }
+
+            dispatch(resetStatus());
+        }
+    }, [dispatch, isLoading, isError, status]);
 
     // this function is to reset the form after submission or error
     const resetForm = () => {

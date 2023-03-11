@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
 import Layout from './Layout/Layout';
 import AddNewJob from './pages/AddNewJob/AddNewJob';
 import EditJob from './pages/EditJob/EditJob';
