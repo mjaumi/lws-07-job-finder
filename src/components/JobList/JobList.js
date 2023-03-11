@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { sorted } from '../../features/filters/filtersSlice';
+import { searched, sorted } from '../../features/filters/filtersSlice';
 import { fetchJobs } from '../../features/jobs/jobsSlice';
 import JobItem from '../JobItem/JobItem';
 
@@ -8,9 +8,10 @@ const JobList = () => {
     // integration of react-redux hooks here
     const dispatch = useDispatch();
     const { isLoading, jobs, isError, error } = useSelector(state => state.jobs);
-    const { filterBy, sortBy } = useSelector(state => state.filters);
+    const { filterBy, searchBy, sortBy } = useSelector(state => state.filters);
 
     // integration of react hooks here
+    const [searchText, setSearchText] = useState('');
     const [sortText, setSortText] = useState(sortBy);
 
     // fetching all the jobs from the server here
@@ -21,7 +22,8 @@ const JobList = () => {
     // dispatching action to sort the jobs here
     useEffect(() => {
         dispatch(sorted(sortText));
-    }, [dispatch, sortText]);
+        dispatch(searched(searchText));
+    }, [dispatch, sortText, searchText]);
 
     // making mutable copy for filtering
     const mutableJobs = [...jobs];
@@ -29,6 +31,11 @@ const JobList = () => {
     // this function is to filter jobs
     const filterJobs = job => {
         return filterBy === 'All' ? job : job.type === filterBy;
+    }
+
+    // this function is filtering jobs by searching with title 
+    const searchJobs = job => {
+        return job.title.toLowerCase().includes(searchBy.toLowerCase());
     }
 
     // this function is sorting the jobs based on salary
@@ -62,6 +69,7 @@ const JobList = () => {
 
     if (!isLoading && !isError && jobs.length) {
         content = mutableJobs
+            .filter(searchJobs)
             .sort((j1, j2) => sortJobs(j1, j2))
             .filter(filterJobs)
             .map(job => <JobItem
@@ -78,7 +86,7 @@ const JobList = () => {
                 <div className='flex gap-4'>
                     <div className='search-field group flex-1'>
                         <i className='fa-solid fa-magnifying-glass search-icon group-focus-within:text-blue-500'></i>
-                        <input type='text' placeholder='Search Job' className='search-input' id='lws-searchJob' />
+                        <input value={searchText} onChange={e => setSearchText(e.target.value)} type='text' placeholder='Search Job' className='search-input' id='lws-searchJob' />
                     </div>
                     <select value={sortText} onChange={e => setSortText(e.target.value)} id='lws-sort' name='sort' autoComplete='sort' className='flex-1'>
                         <option>Default</option>
