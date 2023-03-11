@@ -88,5 +88,5 @@ const jobSlice = createSlice({
     }
 });
 
-export default jobSlice.reducer;
 export const { editedJob } = jobSlice.actions;
+export default jobSlice.reducer;

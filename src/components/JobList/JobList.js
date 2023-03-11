@@ -7,11 +7,20 @@ const JobList = () => {
     // integration of react-redux hooks here
     const dispatch = useDispatch();
     const { isLoading, jobs, isError, error } = useSelector(state => state.jobs);
+    const { filterBy } = useSelector(state => state.filters);
 
     // fetching all the jobs from the server here
     useEffect(() => {
         dispatch(fetchJobs());
     }, [dispatch]);
+
+    // making mutable copy for filtering
+    const mutableJobs = [...jobs];
+
+    // this function is to filter jobs
+    const filterJobs = job => {
+        return filterBy === 'All' ? job : job.type === filterBy;
+    }
 
     // deciding what to render here
     let content = null;
@@ -29,17 +38,19 @@ const JobList = () => {
     }
 
     if (!isLoading && !isError && jobs.length) {
-        content = jobs.map(job => <JobItem
-            key={job.id}
-            job={job}
-        />);
+        content = mutableJobs
+            .filter(filterJobs)
+            .map(job => <JobItem
+                key={job.id}
+                job={job}
+            />);
     }
 
     // rendering the job list component here
     return (
         <>
             <div className='md:flex space-y-2 md:space-y-0 justify-between mb-10 '>
-                <h1 className='lws-section-title'>All Available Jobs</h1>
+                <h1 className='lws-section-title'>{filterBy === 'All' ? 'All Available Jobs' : `${filterBy} Jobs`}</h1>
                 <div className='flex gap-4'>
                     <div className='search-field group flex-1'>
                         <i className='fa-solid fa-magnifying-glass search-icon group-focus-within:text-blue-500'></i>
