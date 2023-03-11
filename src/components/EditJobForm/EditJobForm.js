@@ -1,6 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { updateJob } from '../../features/job/jobSlice';
 
 const EditJobForm = () => {
+    // integration of react-redux hooks here
+    const dispatch = useDispatch();
+    const { id, title, type, salary, deadline } = useSelector(state => state.job.job);
+
+    // integration of react hooks here
+    const [editedTitle, setEditedTitle] = useState(title);
+    const [editedType, setEditedType] = useState(type);
+    const [editedSalary, setEditedSalary] = useState(salary);
+    const [editedDeadline, setEditedDeadline] = useState(deadline);
+
+    // integration of react-router-dom hooks here
+    const navigate = useNavigate();
+
+    // this function is to reset the form after submission or error
+    const resetForm = () => {
+        setEditedTitle('');
+        setEditedType('');
+        setEditedSalary('');
+        setEditedDeadline('');
+    }
+
+    // handler function to handle form submission
+    const editJobFormSubmissionHandler = e => {
+        e.preventDefault();
+
+        // dispatching action to add new job
+        dispatch(updateJob({
+            id,
+            data: {
+                title: editedTitle,
+                type: editedType,
+                salary: Number(editedSalary),
+                deadline: editedDeadline,
+            },
+        }));
+
+        resetForm();
+
+        // returning to home page after editing
+        navigate('/');
+    }
 
     // rendering edit job form component here 
     return (
@@ -8,11 +52,11 @@ const EditJobForm = () => {
             <h1 className='mb-10 text-center lws-section-title'>Edit Job</h1>
 
             <div className='max-w-3xl mx-auto'>
-                <form className='space-y-6'>
+                <form onSubmit={editJobFormSubmissionHandler} className='space-y-6'>
                     <div className='fieldContainer'>
-                        <label for='lws-JobTitle' className='text-sm font-medium text-slate-300'>Job Title</label>
-                        <select id='lws-JobTitle' name='lwsJobTitle' required>
-                            <option value='' hidden selected>Select Job</option>
+                        <label htmlFor='lws-JobTitle' className='text-sm font-medium text-slate-300'>Job Title</label>
+                        <select onChange={e => setEditedTitle(e.target.value)} value={editedTitle} id='lws-JobTitle' name='lwsJobTitle' required>
+                            <option hidden>Select Job</option>
                             <option>Software Engineer</option>
                             <option>Software Developer</option>
                             <option>Full Stack Developer</option>
@@ -31,9 +75,9 @@ const EditJobForm = () => {
                     </div>
 
                     <div className='fieldContainer'>
-                        <label for='lws-JobType'>Job Type</label>
-                        <select id='lws-JobType' name='lwsJobType' required>
-                            <option value='' hidden selected>Select Job Type</option>
+                        <label htmlFor='lws-JobType'>Job Type</label>
+                        <select onChange={e => setEditedType(e.target.value)} value={editedType} id='lws-JobType' name='lwsJobType' required>
+                            <option hidden>Select Job Type</option>
                             <option>Full Time</option>
                             <option>Internship</option>
                             <option>Remote</option>
@@ -41,17 +85,17 @@ const EditJobForm = () => {
                     </div>
 
                     <div className='fieldContainer'>
-                        <label for='lws-JobSalary'>Salary</label>
+                        <label htmlFor='lws-JobSalary'>Salary</label>
                         <div className='flex border rounded-md shadow-sm border-slate-600'>
                             <span className='input-tag'>BDT</span>
-                            <input type='number' name='lwsJobSalary' id='lws-JobSalary' required className='!rounded-l-none !border-0'
+                            <input onChange={e => setEditedSalary(e.target.value)} value={editedSalary} type='number' name='lwsJobSalary' id='lws-JobSalary' required className='!rounded-l-none !border-0'
                                 placeholder='20,00,000' />
                         </div>
                     </div>
 
                     <div className='fieldContainer'>
-                        <label for='lws-JobDeadline'>Deadline</label>
-                        <input type='date' name='lwsJobDeadline' id='lws-JobDeadline' required />
+                        <label htmlFor='lws-JobDeadline'>Deadline</label>
+                        <input onChange={e => setEditedDeadline(e.target.value)} value={editedDeadline} type='date' name='lwsJobDeadline' id='lws-JobDeadline' required />
                     </div>
 
                     <div className='text-right'>

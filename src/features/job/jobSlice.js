@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addJob, deleteJob } from './jobAPI';
+import { addJob, deleteJob, editJob } from './jobAPI';
 
 // initial state
 const initialState = {
@@ -15,6 +15,12 @@ export const createJob = createAsyncThunk('job/createJob', async (data) => {
     return job;
 });
 
+// thunk function to edit existing job from the server
+export const updateJob = createAsyncThunk('job/updateJob', async ({ id, data }) => {
+    const job = await editJob({ id, data });
+    return job;
+});
+
 // thunk function to delete job from the server
 export const removeJob = createAsyncThunk('job/removeJob', async (id) => {
     const job = await deleteJob(id);
@@ -24,6 +30,11 @@ export const removeJob = createAsyncThunk('job/removeJob', async (id) => {
 const jobSlice = createSlice({
     name: 'job',
     initialState,
+    reducers: {
+        editedJob: (state, action) => {
+            state.job = action.payload;
+        },
+    },
     extraReducers: builder => {
         builder
             // add cases for create job
@@ -37,6 +48,22 @@ const jobSlice = createSlice({
                 state.job = action.payload;
             })
             .addCase(createJob.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.job = {};
+                state.error = action.error?.message;
+            })
+            // add cases for update job
+            .addCase(updateJob.pending, state => {
+                state.isLoading = true;
+                state.isError = false;
+                state.error = '';
+            })
+            .addCase(updateJob.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.job = action.payload;
+            })
+            .addCase(updateJob.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.job = {};
@@ -57,9 +84,9 @@ const jobSlice = createSlice({
                 state.isError = true;
                 state.job = {};
                 state.error = action.error?.message;
-            })
-            ;
+            });
     }
 });
 
 export default jobSlice.reducer;
+export const { editedJob } = jobSlice.actions;

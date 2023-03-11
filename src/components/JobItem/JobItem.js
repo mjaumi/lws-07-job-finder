@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { removeJob } from '../../features/job/jobSlice';
+import { editedJob, removeJob } from '../../features/job/jobSlice';
 import numberWithCommas from '../../utils/numberWithCommas';
 
 const JobItem = ({ job }) => {
@@ -16,6 +16,7 @@ const JobItem = ({ job }) => {
 
     // handler function for handling routing to edit job page
     const rerouteToEditPageHandler = () => {
+        dispatch(editedJob(job));
         navigate('/edit-job');
     }
 
