@@ -1,7 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import numberWithCommas from '../../utils/numberWithCommas';
 
-const JobItem = () => {
+const JobItem = ({ job }) => {
+    // destructuring the job object here
+    const { title, type, salary, deadline } = job || {};
+
     // integration of react-router-dom hooks here
     const navigate = useNavigate();
 
@@ -14,20 +18,19 @@ const JobItem = () => {
     return (
         <div className='lws-single-job'>
             <div className='flex-1 min-w-0'>
-                <h2 className='lws-title'>Back End Developer</h2>
+                <h2 className='lws-title'>{title}</h2>
                 <div className='job-footers'>
                     <div className='lws-type'>
-                        {/* <!-- Fulltime - #FF8A00,  --><!-- Internship - #FF5757,  --><!-- Remote - #56E5C4,  --> */}
-                        <i className='fa-solid fa-stop !text-[#FF8A00] text-lg mr-1.5'></i>
-                        Full-time
+                        <i className={`fa-solid fa-stop ${type === 'Internship' ? '!text-[#FF5757]' : type === 'Remote' ? '!text-[#56E5C4]' : '!text-[#FF8A00]'} text-lg mr-1.5`}></i>
+                        {type}
                     </div>
                     <div className='lws-salary'>
                         <i className='fa-solid fa-bangladeshi-taka-sign text-slate-400 text-lg mr-1.5'></i>
-                        BDT 40,000
+                        BDT {numberWithCommas(salary)}
                     </div>
                     <div className='lws-deadline'>
                         <i className='fa-regular fa-calendar text-slate-400 text-lg mr-1.5'></i>
-                        Closing on 2022-12-31
+                        Closing on {deadline}
                     </div>
                 </div>
             </div>
