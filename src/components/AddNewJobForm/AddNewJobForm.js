@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createJob, resetStatus } from '../../features/job/jobSlice';
 
@@ -9,6 +10,9 @@ const AddNewJobForm = () => {
     const [type, setType] = useState('');
     const [salary, setSalary] = useState('');
     const [deadline, setDeadline] = useState('');
+
+    // integration of react-router-dom hooks here
+    const navigate = useNavigate();
 
     // integration of react-redux hooks here
     const dispatch = useDispatch();
@@ -21,6 +25,8 @@ const AddNewJobForm = () => {
                 toast.success('New Job Added Successfully!!!', {
                     toastId: 'addSuccessToast',
                 });
+                // returning to home page after adding new job
+                navigate('/');
             }
 
             if (isError || (status !== 201 && status !== -1)) {
@@ -31,7 +37,7 @@ const AddNewJobForm = () => {
 
             dispatch(resetStatus());
         }
-    }, [dispatch, isLoading, isError, status]);
+    }, [dispatch, isLoading, isError, navigate, status]);
 
     // this function is to reset the form after submission or error
     const resetForm = () => {
