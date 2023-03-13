@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { addJob, deleteJob, editJob } from './jobAPI';
+import { addJob, deleteJob, editJob, getJobToEdit } from './jobAPI';
 
 // initial state
 const initialState = {
@@ -28,15 +28,16 @@ export const removeJob = createAsyncThunk('job/removeJob', async (id) => {
     return status;
 });
 
+// thunk function to get job from the server to edit
+export const getEditableJob = createAsyncThunk('job/getEditableJob', async (id) => {
+    const job = await getJobToEdit(id);
+    return job;
+});
+
 const jobSlice = createSlice({
     name: 'job',
     initialState,
     reducers: {
-        editedJob: (state, action) => {
-            state.isError = false;
-            state.job = action.payload;
-        },
-
         resetStatus: (state) => {
             state.status = -1;
         },
@@ -90,9 +91,25 @@ const jobSlice = createSlice({
                 state.isError = true;
                 state.status = 0;
                 state.error = action.error?.message;
+            })
+            // add cases to get job for editing
+            .addCase(getEditableJob.pending, state => {
+                state.isLoading = true;
+                state.isError = false;
+                state.error = '';
+            })
+            .addCase(getEditableJob.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.job = action.payload[0];
+            })
+            .addCase(getEditableJob.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.status = 0;
+                state.error = action.error?.message;
             });
     }
 });
 
-export const { editedJob, resetStatus } = jobSlice.actions;
+export const { resetStatus } = jobSlice.actions;
 export default jobSlice.reducer;

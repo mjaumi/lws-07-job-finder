@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { editedJob, removeJob, resetStatus } from '../../features/job/jobSlice';
+import { removeJob, resetStatus } from '../../features/job/jobSlice';
 import numberWithCommas from '../../utils/numberWithCommas';
 
 const JobItem = ({ job }) => {
@@ -37,8 +37,7 @@ const JobItem = ({ job }) => {
 
     // handler function for handling routing to edit job page
     const rerouteToEditPageHandler = () => {
-        dispatch(editedJob(job));
-        navigate('/edit-job');
+        navigate(`/edit-job/${id}`);
     }
 
     // handler function for handling delete job from the server

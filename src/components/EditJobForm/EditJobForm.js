@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { resetStatus, updateJob } from '../../features/job/jobSlice';
+import { getEditableJob, resetStatus, updateJob } from '../../features/job/jobSlice';
 
 const EditJobForm = () => {
     // integration of react-redux hooks here
@@ -17,7 +17,20 @@ const EditJobForm = () => {
     const [editedDeadline, setEditedDeadline] = useState(deadline);
 
     // integration of react-router-dom hooks here
+    const { jobId } = useParams();
     const navigate = useNavigate();
+
+    // showing toast to the user here about editing existing job
+    useEffect(() => {
+        dispatch(getEditableJob(jobId));
+
+        if (id) {
+            setEditedTitle(title);
+            setEditedType(type);
+            setEditedSalary(salary);
+            setEditedDeadline(deadline);
+        }
+    }, [dispatch, jobId, id, title, type, salary, deadline]);
 
     // showing toast to the user here about editing existing job
     useEffect(() => {

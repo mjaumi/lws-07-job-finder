@@ -16,4 +16,10 @@ export const editJob = async ({ id, data }) => {
 export const deleteJob = async (id) => {
     const response = await axios.delete(`/jobs/${id}`);
     return response.status;
+}
+
+// this async function is getting job from the server to edit form
+export const getJobToEdit = async (id) => {
+    const response = await axios.get(`/jobs?id_like=${id}`);
+    return response.data;
 } 
